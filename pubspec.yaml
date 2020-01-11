@@ -1,0 +1,31 @@
+name: firatar
+description: A new Flutter project.
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+
+  arkit_plugin: ^0.3.0
+  geolocator: ^5.1.5
+  video_player: ^0.10.5
+  cupertino_icons: ^0.1.2
+  flutter_tts:
+  flutter_compass: ^0.3.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+
+flutter:
+
+  uses-material-design: true
+  assets:
+    - assets/background.jpg
+    - assets/welcome.mp4
+
