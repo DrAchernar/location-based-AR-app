@@ -76,8 +76,8 @@ class _ImageDetectionPageState extends State<ImageDetectionPage> {
     Position position = await Geolocator()
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
 
-    final double _facultypositionlat = 36.829753;
-    final double _facultypositionlong = 36.211741;
+    final double _facultypositionlat = 38.681527;
+    final double _facultypositionlong = 39.196072;
 
     distance = await Geolocator().distanceBetween(position.latitude,
         position.longitude, _facultypositionlat, _facultypositionlong);
@@ -264,6 +264,7 @@ class _ImageDetectionPageState extends State<ImageDetectionPage> {
 
   void onAnchorWasFound(ARKitAnchor anchor) {
     if (anchor is ARKitImageAnchor) {
+        //if you want to block AR while you aren't close to target > add "if (situationDistance==WidgetDistance.ready)" here
       setState(() => anchorWasFound = true);
 
       final materialCard = ARKitMaterial(
