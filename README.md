@@ -12,7 +12,7 @@ used:
 - geolocator
 - flutter_tts
 - flutter_compass
-- video_player(**optional** - after launchscreen I put a intro video)
+- video_player(**optional** - after launchscreen I put an intro video)
 
 First step
 
