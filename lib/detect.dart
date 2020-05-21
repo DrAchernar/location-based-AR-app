@@ -76,14 +76,25 @@ class _ImageDetectionPageState extends State<ImageDetectionPage> {
     Position position = await Geolocator()
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
 
-    final double _facultypositionlat = 38.681527;
-    final double _facultypositionlong = 39.196072;
+//    final double _facultypositionlat = 38.681527;
+//    final double _facultypositionlong = 39.196072;
+    //TODO Change this LatLng to a point near by you, like in front your house or in your backyard
+    final double _facultypositionlat = 29.119802;
+    final double _facultypositionlong = -111.028019;
 
-    distance = await Geolocator().distanceBetween(position.latitude,
-        position.longitude, _facultypositionlat, _facultypositionlong);
+    distance = await Geolocator().distanceBetween(
+      position.latitude,
+      position.longitude,
+      _facultypositionlat,
+      _facultypositionlong,
+    );
 
-    targetDegree = angleFromCoordinate(position.latitude, position.longitude,
-        _facultypositionlat, _facultypositionlong);
+    targetDegree = angleFromCoordinate(
+      position.latitude,
+      position.longitude,
+      _facultypositionlat,
+      _facultypositionlong,
+    );
     calculateDegree();
   }
 
@@ -92,22 +103,25 @@ class _ImageDetectionPageState extends State<ImageDetectionPage> {
     super.initState();
     _getlocation(); //first run
     flutterTts = FlutterTts();
-    timer = new Timer.periodic(Duration(seconds: 7), (timer) {
-      _getlocation();
-      if (distance < 50 && distance != 0 && distance != null) {
-        setState(() {
-          situationDistance = WidgetDistance.ready;
-          situationCompass = WidgetCompass.scanning;
-        });
-      } else {
-        setState(() {
-          _distance = distance.truncate();
-          situationDistance = WidgetDistance.navigating;
-          situationCompass = WidgetCompass.directing;
-        });
-        _speak();
-      }
-    });
+    timer = new Timer.periodic(
+      Duration(seconds: 7),
+      (timer) {
+        _getlocation();
+        if (distance < 50 && distance != 0 && distance != null) {
+          setState(() {
+            situationDistance = WidgetDistance.ready;
+            situationCompass = WidgetCompass.scanning;
+          });
+        } else {
+          setState(() {
+            _distance = distance.truncate();
+            situationDistance = WidgetDistance.navigating;
+            situationCompass = WidgetCompass.directing;
+          });
+          _speak();
+        }
+      },
+    );
   }
 
   @override
@@ -119,32 +133,37 @@ class _ImageDetectionPageState extends State<ImageDetectionPage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        automaticallyImplyLeading: false,
-        title: Text('Fırat AR'),
-        actions: <Widget>[
-          IconButton(
+        appBar: AppBar(
+          centerTitle: true,
+          automaticallyImplyLeading: false,
+          title: Text('Fırat AR'),
+          actions: <Widget>[
+            IconButton(
               icon: Icon(Icons.help),
               onPressed: () {
                 showDialog(
-                    context: context,
-                    builder: (BuildContext context) => CustomDialog());
-              })
-        ],
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
+                  context: context,
+                  builder: (BuildContext context) => CustomDialog(),
+                );
+              },
+            )
+          ],
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: <Color>[
-                Color.fromARGB(190, 207, 37, 7),
-                Colors.transparent
-              ])),
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: <Color>[
+                  Color.fromARGB(190, 207, 37, 7),
+                  Colors.transparent
+                ],
+              ),
+            ),
+          ),
         ),
-      ),
-      body: distanceProvider(),
-      floatingActionButton: compassProvider());
+        body: distanceProvider(),
+        floatingActionButton: compassProvider(),
+      );
 
   Widget readyWidget() {
     return Container(
@@ -158,8 +177,8 @@ class _ImageDetectionPageState extends State<ImageDetectionPage> {
           anchorWasFound
               ? Container()
               : Column(
-                  //do something here...
-                  ),
+                  children: <Widget>[Text('Anchor was found')],
+                ),
         ],
       ),
     );
@@ -182,12 +201,15 @@ class _ImageDetectionPageState extends State<ImageDetectionPage> {
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text(' Distance of Faculty : $_distance m.',
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              backgroundColor: Colors.blueGrey,
-                              color: Colors.white)),
+                      child: Text(
+                        ' Distance of Faculty : $_distance m.',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          backgroundColor: Colors.blueGrey,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -201,15 +223,16 @@ class _ImageDetectionPageState extends State<ImageDetectionPage> {
       backgroundColor: Colors.blue,
       onPressed: null,
       child: Ink(
-          decoration: const ShapeDecoration(
-            color: Colors.lightBlue,
-            shape: CircleBorder(),
-          ),
-          child: IconButton(
-            icon: Icon(Icons.remove_red_eye),
-            color: Colors.white,
-            onPressed: () {},
-          )),
+        decoration: const ShapeDecoration(
+          color: Colors.lightBlue,
+          shape: CircleBorder(),
+        ),
+        child: IconButton(
+          icon: Icon(Icons.remove_red_eye),
+          color: Colors.white,
+          onPressed: () {},
+        ),
+      ),
     );
   }
 
@@ -264,22 +287,32 @@ class _ImageDetectionPageState extends State<ImageDetectionPage> {
 
   void onAnchorWasFound(ARKitAnchor anchor) {
     if (anchor is ARKitImageAnchor) {
-        //if you want to block AR while you aren't close to target > add "if (situationDistance==WidgetDistance.ready)" here
+      //if you want to block AR while you aren't close to target > add "if (situationDistance==WidgetDistance.ready)" here
       setState(() => anchorWasFound = true);
 
       final materialCard = ARKitMaterial(
         lightingModelName: ARKitLightingModel.lambert,
-        diffuse: ARKitMaterialProperty(image: 'firatcard.png'),
+        diffuse: ARKitMaterialProperty(
+          image: 'firatcard.png',
+        ), // this image does not exist
       );
 
-      final image =
-          ARKitPlane(height: 0.4, width: 0.4, materials: [materialCard]);
+      final image = ARKitPlane(
+        height: 0.4,
+        width: 0.4,
+        materials: [materialCard],
+      );
+
+//      final sphereNode = ARKitNode(geometry: ARKitSphere(radius: 0.1), position: vector.Vector3(0, 0, -0.5)); // i get this from ARKit Readme.md code
 
       final targetPosition = anchor.transform.getColumn(3);
       final node = ARKitNode(
-        geometry: image,
+        geometry: ARKitSphere(radius: 1.0), //image
         position: vector.Vector3(
-            targetPosition.x, targetPosition.y, targetPosition.z),
+          targetPosition.x,
+          targetPosition.y,
+          targetPosition.z,
+        ),
         eulerAngles: vector.Vector3.zero(),
       );
       arkitController.add(node);
